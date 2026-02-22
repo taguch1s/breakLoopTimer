@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>休憩ループタイマー - 設定</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #2d3748;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"],
+        input[type="url"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        input[type="number"]:focus,
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .helper-text {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 6px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .success-message {
+            display: none;
+            padding: 12px 16px;
+            background-color: #c6f6d5;
+            color: #2f855a;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 35px;
+        }
+
+        .stats-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>⚙️ 設定</h1>
+        <p class="subtitle">休憩ループタイマーの設定をカスタマイズ</p>
+
+        <div class="stats-box">
+            <div class="stats-title">📊 統計情報</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">休憩回数</div>
+                    <div class="stat-value"><span id="total-breaks">0</span>回</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">総休憩時間</div>
+                    <div class="stat-value"><span id="total-minutes">0</span>分</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="success-message" id="success-message">
+            ✅ 設定を保存しました！
+        </div>
+
+        <form id="settings-form">
+            <div class="section">
+                <div class="section-title">⏰ タイマー設定</div>
+
+                <div class="form-group">
+                    <label for="break-duration">休憩時間（分）</label>
+                    <input type="number" id="break-duration" min="1" max="60" value="10" required>
+                    <div class="helper-text">1分から60分の間で設定できます</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="warning-time">終了前の警告時間（分）</label>
+                    <input type="number" id="warning-time" min="1" max="10" value="1" required>
+                    <div class="helper-text">休憩終了の何分前に通知するか</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🔔 通知設定</div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="enable-notifications" checked>
+                        <label for="enable-notifications" style="margin-bottom: 0;">デスクトップ通知を有効にする</label>
+                    </div>
+                    <div class="helper-text">タイマー終了時に通知を表示します</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🔗 リダイレクト設定</div>
+
+                <div class="form-group">
+                    <label for="redirect-url">リダイレクト先URL</label>
+                    <input type="url" id="redirect-url" value="https://www.notion.so" required>
+                    <div class="helper-text">休憩終了後に自動的に開くページのURL</div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-secondary" id="reset-btn">デフォルトに戻す</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+
+</html>

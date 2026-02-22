@@ -1,0 +1,25 @@
+# 休憩ループタイマー - .gitignore
+
+# アイコンファイル（生成されるため）
+icons/*.png
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Chrome拡張機能のパッケージ
+*.crx
+*.pem
+*.zip
