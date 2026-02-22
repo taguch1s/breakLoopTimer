@@ -27,8 +27,8 @@ function showPromptBanner() {
     banner.innerHTML = `
     <div class="banner-content">
       <span class="banner-icon">⏰</span>
-      <span class="banner-text">10分だけ休憩する？</span>
-      <button class="banner-btn banner-btn-ok" id="break-start-btn">OK</button>
+      <span class="banner-text">Take a 10-minute break?</span>
+      <button class="banner-btn banner-btn-ok" id="break-start-btn">Start</button>
       <button class="banner-btn banner-btn-close" id="break-close-btn">✕</button>
     </div>
   `;
@@ -64,8 +64,8 @@ function showTimerBanner(remainingTime) {
     banner.innerHTML = `
     <div class="banner-content">
       <span class="banner-icon">⏱️</span>
-      <span class="banner-text">休憩時間: <span id="timer-display">${formatTime(minutes, seconds)}</span></span>
-      <button class="banner-btn banner-btn-stop" id="break-stop-btn">中止</button>
+      <span class="banner-text">Break time: <span id="timer-display">${formatTime(minutes, seconds)}</span></span>
+      <button class="banner-btn banner-btn-stop" id="break-stop-btn">Stop</button>
     </div>
   `;
 

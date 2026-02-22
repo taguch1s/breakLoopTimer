@@ -65,7 +65,7 @@ function startTimer(tabId) {
             delayInMinutes: settings.breakDuration
         });
 
-        console.log('タイマー開始:', settings.breakDuration, '分');
+        console.log('Timer started:', settings.breakDuration, 'minutes');
     });
 }
 
@@ -111,8 +111,8 @@ function showWarningNotification() {
             chrome.notifications.create('warning', {
                 type: 'basic',
                 iconUrl: 'icons/icon128.png',
-                title: '休憩時間終了まであと少し！',
-                message: `残り${settings.warningBeforeEnd}分です。そろそろ作業に戻る準備をしましょう。`,
+                title: 'Break time almost over!',
+                message: `${settings.warningBeforeEnd} minute${settings.warningBeforeEnd > 1 ? 's' : ''} remaining. Get ready to return to work.`,
                 priority: 2
             });
         }
@@ -129,8 +129,8 @@ function endBreak() {
             chrome.notifications.create('end', {
                 type: 'basic',
                 iconUrl: 'icons/icon128.png',
-                title: '休憩時間終了！',
-                message: '作業に戻りましょう。お疲れ様でした！',
+                title: 'Break time is over!',
+                message: 'Time to get back to work. Let\'s go!',
                 priority: 2
             });
         }
@@ -140,11 +140,16 @@ function endBreak() {
             chrome.tabs.get(timerState.tabId, (tab) => {
                 if (chrome.runtime.lastError) {
                     // タブが既に閉じられている場合
-                    console.log('タブが見つかりません');
-                } else {
+                    console.log('Tab not found:', chrome.runtime.lastError.message);
+                } else if (tab.url && !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://') && !tab.url.startsWith('devtools://')) {
+                    // 通常のWebページのみリダイレクト（特殊なページは除外）
                     chrome.tabs.update(timerState.tabId, {
                         url: settings.redirectUrl || DEFAULT_SETTINGS.redirectUrl
+                    }).catch((error) => {
+                        console.log('リダイレクトできませんでした:', error);
                     });
+                } else {
+                    console.log('Skipping redirect for special tab:', tab.url);
                 }
             });
         }

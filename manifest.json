@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "休憩ループタイマー",
+  "name": "Break Loop Timer",
   "version": "1.0.0",
-  "description": "SNSでの休憩時間を管理して、仕事への復帰をサポートします",
+  "description": "Manages your break time on SNS and helps you get back to work",
   "permissions": [
     "notifications",
     "storage",

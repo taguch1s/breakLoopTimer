@@ -45,9 +45,9 @@ document.getElementById('settings-form').addEventListener('submit', (e) => {
         enableNotifications: document.getElementById('enable-notifications').checked
     };
 
-    // バリデーション
+    // Validation
     if (settings.warningBeforeEnd >= settings.breakDuration) {
-        alert('警告時間は休憩時間よりも短く設定してください');
+        alert('Warning time must be shorter than break duration');
         return;
     }
 
@@ -59,7 +59,7 @@ document.getElementById('settings-form').addEventListener('submit', (e) => {
 
 // デフォルトに戻すボタンの処理
 document.getElementById('reset-btn').addEventListener('click', () => {
-    if (confirm('設定をデフォルトに戻しますか？')) {
+    if (confirm('Reset all settings to default?')) {
         chrome.storage.sync.set({ settings: DEFAULT_SETTINGS }, () => {
             loadSettings();
             showSuccessMessage();
