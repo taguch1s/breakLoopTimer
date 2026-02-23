@@ -80,20 +80,26 @@ function addSite() {
     }
 
     chrome.storage.sync.get('settings', (data) => {
-        const settings = data.settings || DEFAULT_SETTINGS;
-        const sites = settings.targetSites || [];
+        const currentSettings = data.settings || DEFAULT_SETTINGS;
+        const currentSites = currentSettings.targetSites || [];
 
         // 既に存在するかチェック
-        if (sites.includes(newSite)) {
+        if (currentSites.includes(newSite)) {
             alert('This site is already in the list');
             return;
         }
 
-        sites.push(newSite);
-        settings.targetSites = sites;
+        // 新しい配列を作成（元の配列を変更しない）
+        const newSites = [...currentSites, newSite];
 
-        chrome.storage.sync.set({ settings }, () => {
-            renderSitesList(sites);
+        // 新しい設定オブジェクトを作成
+        const newSettings = {
+            ...currentSettings,
+            targetSites: newSites
+        };
+
+        chrome.storage.sync.set({ settings: newSettings }, () => {
+            renderSitesList(newSites);
             input.value = '';
             showSuccessMessage();
         });
@@ -103,14 +109,20 @@ function addSite() {
 // サイトを削除
 function removeSite(index) {
     chrome.storage.sync.get('settings', (data) => {
-        const settings = data.settings || DEFAULT_SETTINGS;
-        const sites = settings.targetSites || [];
+        const currentSettings = data.settings || DEFAULT_SETTINGS;
+        const currentSites = currentSettings.targetSites || [];
 
-        sites.splice(index, 1);
-        settings.targetSites = sites;
+        // 新しい配列を作成（元の配列を変更しない）
+        const newSites = currentSites.filter((_, i) => i !== index);
 
-        chrome.storage.sync.set({ settings }, () => {
-            renderSitesList(sites);
+        // 新しい設定オブジェクトを作成
+        const newSettings = {
+            ...currentSettings,
+            targetSites: newSites
+        };
+
+        chrome.storage.sync.set({ settings: newSettings }, () => {
+            renderSitesList(newSites);
             showSuccessMessage();
         });
     });
