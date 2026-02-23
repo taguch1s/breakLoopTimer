@@ -10,6 +10,28 @@ function init() {
         return;
     }
 
+    // 現在のサイトが対象サイトリストに含まれているかチェック
+    chrome.storage.sync.get('settings', (data) => {
+        const settings = data.settings || { targetSites: ['twitter.com', 'x.com'] };
+        const currentHostname = window.location.hostname;
+
+        // targetSitesのいずれかが現在のホスト名に含まれているかチェック
+        const isTargetSite = settings.targetSites.some(site =>
+            currentHostname === site || currentHostname.endsWith('.' + site)
+        );
+
+        if (!isTargetSite) {
+            console.log('Not a target site:', currentHostname);
+            return;
+        }
+
+        initBanner();
+    });
+}
+
+// バナーの初期化処理
+function initBanner() {
+
     chrome.runtime.sendMessage({ type: 'GET_TIMER_STATE' }, (response) => {
         if (chrome.runtime.lastError) {
             console.log('Error getting timer state:', chrome.runtime.lastError.message);

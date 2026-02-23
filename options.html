@@ -228,6 +228,53 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Site list styles */
+        .site-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .site-name {
+            font-size: 14px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .remove-site-btn {
+            background: #fc8181;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .remove-site-btn:hover {
+            background: #f56565;
+        }
+
+        input[type="text"] {
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
     </style>
 </head>
 
@@ -280,6 +327,22 @@
                         <label for="enable-notifications" style="margin-bottom: 0;">Enable desktop notifications</label>
                     </div>
                     <div class="helper-text">Show notifications when the timer ends</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">🌐 Target Websites</div>
+
+                <div class="form-group">
+                    <label>Websites to monitor for breaks</label>
+                    <div id="sites-list" style="margin-bottom: 15px;">
+                        <!-- Site list will be populated here -->
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="new-site" placeholder="example.com" style="flex: 1;">
+                        <button type="button" class="btn btn-secondary" id="add-site-btn" style="flex: 0;">Add</button>
+                    </div>
+                    <div class="helper-text">Enter domain names (e.g., twitter.com, youtube.com)</div>
                 </div>
             </div>
 
