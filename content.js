@@ -5,7 +5,17 @@ let timerInterval = null;
 // ページ読み込み時にバナーを表示
 function init() {
     // 既にタイマーが動いているかチェック
+    if (!chrome.runtime?.id) {
+        console.log('Extension context invalidated');
+        return;
+    }
+
     chrome.runtime.sendMessage({ type: 'GET_TIMER_STATE' }, (response) => {
+        if (chrome.runtime.lastError) {
+            console.log('Error getting timer state:', chrome.runtime.lastError.message);
+            return;
+        }
+
         if (response && response.isActive) {
             // 既にタイマーが動いている場合は、タイマー表示バナーを表示
             showTimerBanner(response.remainingTime);
@@ -118,7 +128,17 @@ function updateTimer(initialRemaining) {
 
 // 休憩を開始
 function startBreak() {
+    if (!chrome.runtime?.id) {
+        console.log('Extension context invalidated');
+        return;
+    }
+
     chrome.runtime.sendMessage({ type: 'START_TIMER' }, (response) => {
+        if (chrome.runtime.lastError) {
+            console.log('Error starting timer:', chrome.runtime.lastError.message);
+            return;
+        }
+
         if (response && response.success) {
             // バナーをタイマー表示に切り替え
             chrome.storage.sync.get('settings', (data) => {
@@ -132,7 +152,17 @@ function startBreak() {
 
 // 休憩を中止
 function stopBreak() {
+    if (!chrome.runtime?.id) {
+        console.log('Extension context invalidated');
+        closeBanner();
+        return;
+    }
+
     chrome.runtime.sendMessage({ type: 'STOP_TIMER' }, (response) => {
+        if (chrome.runtime.lastError) {
+            console.log('Error stopping timer:', chrome.runtime.lastError.message);
+        }
+
         if (response && response.success) {
             if (timerInterval) {
                 clearInterval(timerInterval);
@@ -168,7 +198,17 @@ if (document.readyState === 'loading') {
 // タブが再度フォーカスされた時にタイマー状態を確認
 document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
+        if (!chrome.runtime?.id) {
+            console.log('Extension context invalidated');
+            return;
+        }
+
         chrome.runtime.sendMessage({ type: 'GET_TIMER_STATE' }, (response) => {
+            if (chrome.runtime.lastError) {
+                console.log('Error getting timer state:', chrome.runtime.lastError.message);
+                return;
+            }
+
             if (response && response.isActive && !document.getElementById('break-loop-timer-banner')) {
                 showTimerBanner(response.remainingTime);
             }

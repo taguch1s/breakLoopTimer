@@ -135,21 +135,23 @@ function endBreak() {
             });
         }
 
-        // タブをリダイレクト
-        if (timerState.tabId) {
+        // タブを閉じる
+        if (timerState.tabId && typeof timerState.tabId === 'number') {
             chrome.tabs.get(timerState.tabId, (tab) => {
                 if (chrome.runtime.lastError) {
                     // タブが既に閉じられている場合
                     console.log('Tab not found:', chrome.runtime.lastError.message);
-                } else if (tab.url && !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://') && !tab.url.startsWith('devtools://')) {
-                    // 通常のWebページのみリダイレクト（特殊なページは除外）
-                    chrome.tabs.update(timerState.tabId, {
-                        url: settings.redirectUrl || DEFAULT_SETTINGS.redirectUrl
-                    }).catch((error) => {
-                        console.log('リダイレクトできませんでした:', error);
+                } else if (tab && tab.id && !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://') && !tab.url.startsWith('devtools://')) {
+                    // 通常のWebページのみ閉じる（特殊なページは除外）
+                    chrome.tabs.remove(tab.id, () => {
+                        if (chrome.runtime.lastError) {
+                            console.log('Failed to close tab:', chrome.runtime.lastError.message);
+                        } else {
+                            console.log('Tab closed successfully');
+                        }
                     });
                 } else {
-                    console.log('Skipping redirect for special tab:', tab.url);
+                    console.log('Skipping close for special tab:', tab?.url);
                 }
             });
         }
