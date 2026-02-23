@@ -30,30 +30,36 @@ function init() {
 function showPromptBanner() {
     if (bannerShown) return;
 
-    const banner = document.createElement('div');
-    banner.id = 'break-loop-timer-banner';
-    banner.className = 'break-loop-timer-prompt';
+    // 設定を読み込んでバナーを表示
+    chrome.storage.sync.get('settings', (data) => {
+        const settings = data.settings || { breakDuration: 10 };
+        const duration = settings.breakDuration;
 
-    banner.innerHTML = `
+        const banner = document.createElement('div');
+        banner.id = 'break-loop-timer-banner';
+        banner.className = 'break-loop-timer-prompt';
+
+        banner.innerHTML = `
     <div class="banner-content">
       <span class="banner-icon">⏰</span>
-      <span class="banner-text">Take a 10-minute break?</span>
+      <span class="banner-text">Take a ${duration}-minute break?</span>
       <button class="banner-btn banner-btn-ok" id="break-start-btn">Start</button>
       <button class="banner-btn banner-btn-close" id="break-close-btn">✕</button>
     </div>
   `;
 
-    document.body.appendChild(banner);
-    bannerShown = true;
+        document.body.appendChild(banner);
+        bannerShown = true;
 
-    // イベントリスナーを追加
-    document.getElementById('break-start-btn').addEventListener('click', startBreak);
-    document.getElementById('break-close-btn').addEventListener('click', closeBanner);
+        // イベントリスナーを追加
+        document.getElementById('break-start-btn').addEventListener('click', startBreak);
+        document.getElementById('break-close-btn').addEventListener('click', closeBanner);
 
-    // 3秒後に自動的にフェードイン
-    setTimeout(() => {
-        banner.classList.add('show');
-    }, 500);
+        // 3秒後に自動的にフェードイン
+        setTimeout(() => {
+            banner.classList.add('show');
+        }, 500);
+    });
 }
 
 // タイマー表示バナーを表示

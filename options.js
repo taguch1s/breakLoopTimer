@@ -2,7 +2,6 @@
 const DEFAULT_SETTINGS = {
     breakDuration: 10,
     warningBeforeEnd: 1,
-    redirectUrl: 'https://www.notion.so',
     enableNotifications: true
 };
 
@@ -19,7 +18,6 @@ function loadSettings() {
 
         document.getElementById('break-duration').value = settings.breakDuration;
         document.getElementById('warning-time').value = settings.warningBeforeEnd;
-        document.getElementById('redirect-url').value = settings.redirectUrl;
         document.getElementById('enable-notifications').checked = settings.enableNotifications;
     });
 }
@@ -41,7 +39,6 @@ document.getElementById('settings-form').addEventListener('submit', (e) => {
     const settings = {
         breakDuration: parseInt(document.getElementById('break-duration').value),
         warningBeforeEnd: parseInt(document.getElementById('warning-time').value),
-        redirectUrl: document.getElementById('redirect-url').value,
         enableNotifications: document.getElementById('enable-notifications').checked
     };
 

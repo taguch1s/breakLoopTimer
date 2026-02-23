@@ -11,7 +11,6 @@ let timerState = {
 const DEFAULT_SETTINGS = {
     breakDuration: 10, // 分
     warningBeforeEnd: 1, // 終了前の警告時間（分）
-    redirectUrl: 'https://www.notion.so', // デフォルトのリダイレクト先
     enableNotifications: true
 };
 
@@ -123,6 +122,15 @@ function showWarningNotification() {
 function endBreak() {
     chrome.storage.sync.get('settings', (data) => {
         const settings = data.settings || DEFAULT_SETTINGS;
+
+        // 統計情報を更新
+        chrome.storage.local.get('breakStats', (statsData) => {
+            const stats = statsData.breakStats || { count: 0, totalMinutes: 0 };
+            stats.count += 1;
+            stats.totalMinutes += settings.breakDuration;
+            chrome.storage.local.set({ breakStats: stats });
+            console.log('Stats updated:', stats);
+        });
 
         // 通知を表示
         if (settings.enableNotifications) {
