@@ -12,7 +12,7 @@ function init() {
 
     // 現在のサイトが対象サイトリストに含まれているかチェック
     chrome.storage.sync.get('settings', (data) => {
-        const settings = data.settings || { targetSites: ['twitter.com', 'x.com'] };
+        const settings = data.settings || { targetSites: [] };
         const currentHostname = window.location.hostname;
 
         // targetSitesのいずれかが現在のホスト名に含まれているかチェック

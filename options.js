@@ -3,7 +3,7 @@ const DEFAULT_SETTINGS = {
     breakDuration: 10,
     warningBeforeEnd: 1,
     enableNotifications: true,
-    targetSites: ['twitter.com', 'x.com']
+    targetSites: [] // ユーザーが手動で追加
 };
 
 // ページ読み込み時に設定を読み込む

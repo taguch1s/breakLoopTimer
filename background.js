@@ -12,7 +12,7 @@ const DEFAULT_SETTINGS = {
     breakDuration: 10, // 分
     warningBeforeEnd: 1, // 終了前の警告時間（分）
     enableNotifications: true,
-    targetSites: ['twitter.com', 'x.com'] // 休憩対象サイト
+    targetSites: [] // 休憩対象サイト（ユーザーが手動で追加）
 };
 
 // 拡張機能のインストール時
