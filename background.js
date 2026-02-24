@@ -64,8 +64,6 @@ function startTimer(tabId) {
         chrome.alarms.create('endAlarm', {
             delayInMinutes: settings.breakDuration
         });
-
-        console.log('Timer started:', settings.breakDuration, 'minutes');
     });
 }
 
@@ -130,7 +128,6 @@ function endBreak() {
             stats.count += 1;
             stats.totalMinutes += settings.breakDuration;
             chrome.storage.local.set({ breakStats: stats });
-            console.log('Stats updated:', stats);
         });
 
         // 通知を表示
@@ -155,8 +152,6 @@ function endBreak() {
                     chrome.tabs.remove(tab.id, () => {
                         if (chrome.runtime.lastError) {
                             console.log('Failed to close tab:', chrome.runtime.lastError.message);
-                        } else {
-                            console.log('Tab closed successfully');
                         }
                     });
                 } else {

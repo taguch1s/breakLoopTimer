@@ -21,7 +21,6 @@ function init() {
         );
 
         if (!isTargetSite) {
-            console.log('Not a target site:', currentHostname);
             return;
         }
 
