@@ -12,7 +12,7 @@ const DEFAULT_SETTINGS = {
     breakDuration: 10, // 分
     warningBeforeEnd: 1, // 終了前の警告時間（分）
     enableNotifications: true,
-    targetSites: [] // 休憩対象サイト（ユーザーが手動で追加）
+    favoriteSites: [] // よく使う休憩サイト（最大10個）
 };
 
 // 拡張機能のインストール時
@@ -20,6 +20,14 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.get('settings', (data) => {
         if (!data.settings) {
             chrome.storage.sync.set({ settings: DEFAULT_SETTINGS });
+        } else {
+            // targetSites から favoriteSites へのマイグレーション
+            const settings = data.settings;
+            if (settings.targetSites && !settings.favoriteSites) {
+                settings.favoriteSites = settings.targetSites;
+                delete settings.targetSites;
+                chrome.storage.sync.set({ settings });
+            }
         }
     });
 });
@@ -42,6 +50,36 @@ chrome.action.onClicked.addListener(async (tab) => {
         });
     } catch (error) {
         console.log('Failed to inject script:', error.message);
+    }
+});
+
+// お気に入りリンクからタブを開いた時の自動バナー展開
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    // ページの読み込みが完了した時のみ
+    if (changeInfo.status === 'complete' && tab.url) {
+        // 自動ブレークフラグをチェック
+        chrome.storage.local.get('autoBreakNextTab', async (data) => {
+            if (data.autoBreakNextTab) {
+                // フラグをクリア
+                chrome.storage.local.remove('autoBreakNextTab');
+
+                try {
+                    // content.js を注入
+                    await chrome.scripting.executeScript({
+                        target: { tabId: tabId },
+                        files: ['content.js']
+                    });
+
+                    // content.css を注入
+                    await chrome.scripting.insertCSS({
+                        target: { tabId: tabId },
+                        files: ['content.css']
+                    });
+                } catch (error) {
+                    console.log('Failed to auto-inject script:', error.message);
+                }
+            }
+        });
     }
 });
 
@@ -75,6 +113,32 @@ function startTimer(tabId) {
 
         // タイマーの状態を保存
         chrome.storage.local.set({ timerState });
+
+        // 現在のサイトをお気に入りに追加
+        chrome.tabs.get(tabId, (tab) => {
+            if (tab && tab.url) {
+                try {
+                    const url = new URL(tab.url);
+                    const hostname = url.hostname;
+
+                    // 既存のお気に入りリストを取得
+                    const favoriteSites = settings.favoriteSites || [];
+
+                    // 既に存在する場合は先頭に移動、なければ追加
+                    const filtered = favoriteSites.filter(site => site !== hostname);
+                    const newFavorites = [hostname, ...filtered].slice(0, 10); // 最大10個
+
+                    // 更新された設定を保存
+                    const newSettings = {
+                        ...settings,
+                        favoriteSites: newFavorites
+                    };
+                    chrome.storage.sync.set({ settings: newSettings });
+                } catch (error) {
+                    console.log('Failed to parse URL:', error);
+                }
+            }
+        });
 
         // アラーム設定（警告用）
         chrome.alarms.create('warningAlarm', {

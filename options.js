@@ -3,7 +3,7 @@ const DEFAULT_SETTINGS = {
     breakDuration: 10,
     warningBeforeEnd: 1,
     enableNotifications: true,
-    targetSites: [] // ユーザーが手動で追加
+    favoriteSites: [] // よく使う休憩サイト（最大10個）
 };
 
 // ページ読み込み時に設定を読み込む
@@ -33,7 +33,7 @@ function loadSettings() {
         document.getElementById('enable-notifications').checked = settings.enableNotifications;
 
         // サイトリストを表示
-        renderSitesList(settings.targetSites || DEFAULT_SETTINGS.targetSites);
+        renderSitesList(settings.favoriteSites || DEFAULT_SETTINGS.favoriteSites);
     });
 }
 
@@ -43,7 +43,7 @@ function renderSitesList(sites) {
     listContainer.innerHTML = '';
 
     if (sites.length === 0) {
-        listContainer.innerHTML = '<div style="color: #718096; font-size: 14px;">No sites added yet</div>';
+        listContainer.innerHTML = '<div style="color: #718096; font-size: 14px;">No favorite sites yet. Start a break to add sites automatically!</div>';
         return;
     }
 
@@ -51,15 +51,30 @@ function renderSitesList(sites) {
         const siteItem = document.createElement('div');
         siteItem.className = 'site-item';
         siteItem.innerHTML = `
-            <span class="site-name">${site}</span>
+            <a href="#" class="site-link" data-site="${site}" title="Open ${site} and start break">🔗 ${site}</a>
             <button type="button" class="remove-site-btn" data-index="${index}">Remove</button>
         `;
         listContainer.appendChild(siteItem);
+
+        // リンククリックのイベントリスナー
+        siteItem.querySelector('.site-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            openSiteWithAutoBreak(site);
+        });
 
         // 削除ボタンのイベントリスナー
         siteItem.querySelector('.remove-site-btn').addEventListener('click', () => {
             removeSite(index);
         });
+    });
+}
+
+// サイトを開いて自動的にバナーを表示
+function openSiteWithAutoBreak(site) {
+    // タブを開く前にフラグを設定
+    chrome.storage.local.set({ autoBreakNextTab: true }, () => {
+        // 新しいタブでサイトを開く
+        chrome.tabs.create({ url: `https://${site}` });
     });
 }
 
@@ -81,7 +96,7 @@ function addSite() {
 
     chrome.storage.sync.get('settings', (data) => {
         const currentSettings = data.settings || DEFAULT_SETTINGS;
-        const currentSites = currentSettings.targetSites || [];
+        const currentSites = currentSettings.favoriteSites || [];
 
         // 既に存在するかチェック
         if (currentSites.includes(newSite)) {
@@ -89,13 +104,19 @@ function addSite() {
             return;
         }
 
-        // 新しい配列を作成（元の配列を変更しない）
-        const newSites = [...currentSites, newSite];
+        // 最大10個の制限
+        if (currentSites.length >= 10) {
+            alert('Maximum 10 favorite sites allowed. Please remove one first.');
+            return;
+        }
+
+        // 新しい配列を作成（先頭に追加）
+        const newSites = [newSite, ...currentSites];
 
         // 新しい設定オブジェクトを作成
         const newSettings = {
             ...currentSettings,
-            targetSites: newSites
+            favoriteSites: newSites
         };
 
         chrome.storage.sync.set({ settings: newSettings }, () => {
@@ -110,7 +131,7 @@ function addSite() {
 function removeSite(index) {
     chrome.storage.sync.get('settings', (data) => {
         const currentSettings = data.settings || DEFAULT_SETTINGS;
-        const currentSites = currentSettings.targetSites || [];
+        const currentSites = currentSettings.favoriteSites || [];
 
         // 新しい配列を作成（元の配列を変更しない）
         const newSites = currentSites.filter((_, i) => i !== index);
@@ -118,7 +139,7 @@ function removeSite(index) {
         // 新しい設定オブジェクトを作成
         const newSettings = {
             ...currentSettings,
-            targetSites: newSites
+            favoriteSites: newSites
         };
 
         chrome.storage.sync.set({ settings: newSettings }, () => {
@@ -149,7 +170,7 @@ document.getElementById('settings-form').addEventListener('submit', (e) => {
             breakDuration: parseInt(document.getElementById('break-duration').value),
             warningBeforeEnd: parseInt(document.getElementById('warning-time').value),
             enableNotifications: document.getElementById('enable-notifications').checked,
-            targetSites: currentSettings.targetSites || DEFAULT_SETTINGS.targetSites
+            favoriteSites: currentSettings.favoriteSites || DEFAULT_SETTINGS.favoriteSites
         };
 
         // Validation
@@ -170,7 +191,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
     if (confirm('Reset all settings to default?')) {
         chrome.storage.sync.set({ settings: DEFAULT_SETTINGS }, () => {
             loadSettings();
-            renderSitesList(DEFAULT_SETTINGS.targetSites);
+            renderSitesList(DEFAULT_SETTINGS.favoriteSites);
             showSuccessMessage();
         });
     }
