@@ -2,31 +2,19 @@
   "manifest_version": 3,
   "name": "Break Loop Timer",
   "version": "1.0.0",
-  "description": "Manages your break time on SNS and helps you get back to work",
+  "description": "Timer to manage break time on websites you choose. Shows banner on target sites, sends notifications when break ends, and automatically closes tabs. No data collection.",
   "permissions": [
+    "activeTab",
+    "scripting",
     "notifications",
     "storage",
     "tabs",
     "alarms"
   ],
-  "host_permissions": [
-    "*://*/*"
-  ],
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "*://*/*"
-      ],
-      "js": ["content.js"],
-      "css": ["content.css"],
-      "run_at": "document_end"
-    }
-  ],
   "action": {
-    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

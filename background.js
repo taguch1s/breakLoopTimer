@@ -24,6 +24,27 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
+// 拡張機能アイコンがクリックされた時
+chrome.action.onClicked.addListener(async (tab) => {
+    if (!tab.id) return;
+
+    try {
+        // content.js を注入
+        await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ['content.js']
+        });
+
+        // content.css を注入
+        await chrome.scripting.insertCSS({
+            target: { tabId: tab.id },
+            files: ['content.css']
+        });
+    } catch (error) {
+        console.log('Failed to inject script:', error.message);
+    }
+});
+
 // content scriptからのメッセージを受信
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'START_TIMER') {

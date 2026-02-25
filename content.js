@@ -1,32 +1,38 @@
-// バナーが既に表示されているかチェック
-let bannerShown = false;
-let timerInterval = null;
+// 既にスクリプトが注入されているかチェック
+if (window.breakLoopTimerInjected) {
+    console.log('Script already injected, skipping...');
+} else {
+    window.breakLoopTimerInjected = true;
 
-// ページ読み込み時にバナーを表示
-function init() {
-    // 既にタイマーが動いているかチェック
-    if (!chrome.runtime?.id) {
-        console.log('Extension context invalidated');
-        return;
-    }
+    // バナーが既に表示されているかチェック
+    let bannerShown = false;
+    let timerInterval = null;
 
-    // 現在のサイトが対象サイトリストに含まれているかチェック
-    chrome.storage.sync.get('settings', (data) => {
-        const settings = data.settings || { targetSites: [] };
-        const currentHostname = window.location.hostname;
-
-        // targetSitesのいずれかが現在のホスト名に含まれているかチェック
-        const isTargetSite = settings.targetSites.some(site =>
-            currentHostname === site || currentHostname.endsWith('.' + site)
-        );
-
-        if (!isTargetSite) {
+    // ページ読み込み時にバナーを表示
+    function init() {
+        // 既にタイマーが動いているかチェック
+        if (!chrome.runtime?.id) {
+            console.log('Extension context invalidated');
             return;
         }
 
-        initBanner();
-    });
-}
+        // 現在のサイトが対象サイトリストに含まれているかチェック
+        chrome.storage.sync.get('settings', (data) => {
+            const settings = data.settings || { targetSites: [] };
+            const currentHostname = window.location.hostname;
+
+            // targetSitesのいずれかが現在のホスト名に含まれているかチェック
+            const isTargetSite = settings.targetSites.some(site =>
+                currentHostname === site || currentHostname.endsWith('.' + site)
+            );
+
+            if (!isTargetSite) {
+                return;
+            }
+
+            initBanner();
+        });
+    }
 
 // バナーの初期化処理
 function initBanner() {
@@ -215,30 +221,27 @@ function closeBanner() {
     }
 }
 
-// ページ読み込み完了後に初期化
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
-
-// タブが再度フォーカスされた時にタイマー状態を確認
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-        if (!chrome.runtime?.id) {
-            console.log('Extension context invalidated');
-            return;
-        }
-
-        chrome.runtime.sendMessage({ type: 'GET_TIMER_STATE' }, (response) => {
-            if (chrome.runtime.lastError) {
-                console.log('Error getting timer state:', chrome.runtime.lastError.message);
+    // タブが再度フォーカスされた時にタイマー状態を確認
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            if (!chrome.runtime?.id) {
+                console.log('Extension context invalidated');
                 return;
             }
 
-            if (response && response.isActive && !document.getElementById('break-loop-timer-banner')) {
-                showTimerBanner(response.remainingTime);
-            }
-        });
-    }
-});
+            chrome.runtime.sendMessage({ type: 'GET_TIMER_STATE' }, (response) => {
+                if (chrome.runtime.lastError) {
+                    console.log('Error getting timer state:', chrome.runtime.lastError.message);
+                    return;
+                }
+
+                if (response && response.isActive && !document.getElementById('break-loop-timer-banner')) {
+                    showTimerBanner(response.remainingTime);
+                }
+            });
+        }
+    });
+
+    // 初期化を実行
+    init();
+}
