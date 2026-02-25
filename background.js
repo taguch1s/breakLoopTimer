@@ -53,36 +53,6 @@ chrome.action.onClicked.addListener(async (tab) => {
     }
 });
 
-// お気に入りリンクからタブを開いた時の自動バナー展開
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    // ページの読み込みが完了した時のみ
-    if (changeInfo.status === 'complete' && tab.url) {
-        // 自動ブレークフラグをチェック
-        chrome.storage.local.get('autoBreakNextTab', async (data) => {
-            if (data.autoBreakNextTab) {
-                // フラグをクリア
-                chrome.storage.local.remove('autoBreakNextTab');
-
-                try {
-                    // content.js を注入
-                    await chrome.scripting.executeScript({
-                        target: { tabId: tabId },
-                        files: ['content.js']
-                    });
-
-                    // content.css を注入
-                    await chrome.scripting.insertCSS({
-                        target: { tabId: tabId },
-                        files: ['content.css']
-                    });
-                } catch (error) {
-                    console.log('Failed to auto-inject script:', error.message);
-                }
-            }
-        });
-    }
-});
-
 // content scriptからのメッセージを受信
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'START_TIMER') {

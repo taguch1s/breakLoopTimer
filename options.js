@@ -59,22 +59,13 @@ function renderSitesList(sites) {
         // リンククリックのイベントリスナー
         siteItem.querySelector('.site-link').addEventListener('click', (e) => {
             e.preventDefault();
-            openSiteWithAutoBreak(site);
+            chrome.tabs.create({ url: `https://${site}` });
         });
 
         // 削除ボタンのイベントリスナー
         siteItem.querySelector('.remove-site-btn').addEventListener('click', () => {
             removeSite(index);
         });
-    });
-}
-
-// サイトを開いて自動的にバナーを表示
-function openSiteWithAutoBreak(site) {
-    // タブを開く前にフラグを設定
-    chrome.storage.local.set({ autoBreakNextTab: true }, () => {
-        // 新しいタブでサイトを開く
-        chrome.tabs.create({ url: `https://${site}` });
     });
 }
 

@@ -1,6 +1,6 @@
 // 既にスクリプトが注入されているかチェック
 if (window.breakLoopTimerInjected) {
-    console.log('Script already injected, skipping...');
+    // 既に注入済みの場合はスキップ
 } else {
     window.breakLoopTimerInjected = true;
 
@@ -15,13 +15,11 @@ if (window.breakLoopTimerInjected) {
             console.log('Extension context invalidated');
             return;
         }
-
         initBanner();
     }
 
     // バナーの初期化処理
     function initBanner() {
-
         chrome.runtime.sendMessage({ type: 'GET_TIMER_STATE' }, (response) => {
             if (chrome.runtime.lastError) {
                 console.log('Error getting timer state:', chrome.runtime.lastError.message);
