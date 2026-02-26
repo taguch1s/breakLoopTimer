@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Break Loop Timer",
   "version": "1.0.0",
-  "description": "Timer to manage break time on websites you choose. Shows banner on target sites, sends notifications when break ends, and automatically closes tabs. No data collection.",
+  "description": "Break time manager with timer, notifications, and auto tab closing. Click icon on any site to start your break.",
   "permissions": [
     "activeTab",
     "scripting",

@@ -1,148 +1,185 @@
-# 休憩ループタイマー ⏰
+# Break Loop Timer ???
 
-SNSでの休憩時間を管理して、仕事への復帰をサポートするChrome拡張機能です。
+[???????? English](README.md) | [???????? ?????????](README.ja.md)
 
-## 🎯 機能
+A Chrome extension that helps you manage break time and return to your tasks on schedule.
 
-- **自動バナー表示**: TwitterやX（旧Twitter）を開くと「10分だけ休憩する？」というバナーが表示されます
-- **タイマー機能**: OKボタンを押すとタイマーが開始され、画面上部に残り時間が表示されます
-- **デスクトップ通知**: 休憩終了の1分前に通知が表示されます
-- **自動リダイレクト**: 休憩時間が終了すると、設定したURL（デフォルト: Notion）に自動的にリダイレクトされます
-- **統計機能**: 休憩回数と総休憩時間を記録します
+## ???? Features
 
-## 📦 インストール方法
+- **Visual Timer Banner**: Click the extension icon on any website to start a break timer with a countdown display
+- **Desktop Notifications**: Get notified before your break ends so you can wrap up
+- **Auto Tab Closing**: Tabs automatically close when break time expires to prevent endless scrolling
+- **Customizable Duration**: Set your preferred break length (1-60 minutes, default: 10 minutes)
+- **Favorite Sites**: Quick access shortcuts to your most-used break websites
+- **Usage Statistics**: Track your break count and total break time
 
-### 開発者モードでのインストール
+## ???? Why Break Loop Timer?
 
-1. このリポジトリをクローンまたはダウンロードします
+Ever lost track of time scrolling through social media during your break?
+
+You planned a quick 10-minute break, but suddenly an hour has passed. Break Loop Timer helps you stay on track and return to your tasks on time.
+
+**Perfect for:**
+- Students managing study breaks
+- Remote workers maintaining productivity
+- Anyone who wants to enjoy breaks guilt-free without losing track of time
+
+## ???? Installation
+
+### Option 1: Chrome Web Store (Recommended)
+
+*Coming soon - Under review*
+
+### Option 2: Manual Installation (Developer Mode)
+
+1. Clone or download this repository
 
 ```bash
 git clone <repository-url>
 cd breakLoopTimer
 ```
 
-2. Chromeで `chrome://extensions/` を開きます
+2. Open Chrome and go to `chrome://extensions/`
 
-3. 右上の「デベロッパーモード」をONにします
+3. Enable "Developer mode" in the top-right corner
 
-4. 「パッケージ化されていない拡張機能を読み込む」をクリック
+4. Click "Load unpacked"
 
-5. このプロジェクトのフォルダ（breakLoopTimer）を選択します
+5. Select the `breakLoopTimer` folder
 
-6. 拡張機能が読み込まれ、使用可能になります
+6. The extension is now ready to use!
 
-## 🚀 使い方
+## ???? How to Use
 
-### 基本的な使い方
+### Basic Usage
 
-1. **対象サイトを開く**: TwitterやYouTubeなど、休憩に使いたいサイトを開きます
+1. **Open any website**: Navigate to YouTube, Twitter, or any site where you want to take a break
 
-2. **拡張機能アイコンをクリック**: ブラウザのツールバーにある拡張機能アイコン（⏰）をクリックします
+2. **Click the extension icon**: Click the timer icon (???) in your browser toolbar
 
-3. **休憩を開始**: 画面上部にバナーが表示されるので、「Start」ボタンをクリックするとタイマーが開始されます
+3. **Start your break**: A banner appears at the top of the page. Click "Start" to begin the timer
 
-4. **休憩中**: 画面上部に残り時間が表示されます。「Stop」ボタンでいつでも停止できます
+4. **During break**: The countdown timer shows your remaining time. You can click "Stop" to end early
 
-5. **通知**: 残り時間が設定値になるとデスクトップ通知が表示されます
+5. **Get notified**: Desktop notification appears when your break is about to end
 
-6. **自動タブクローズ**: 時間が経過すると、休憩に使っていたタブが自動的に閉じられます
+6. **Auto close**: The tab automatically closes when time's up
 
-### 設定のカスタマイズ
+### Customizing Settings
 
-拡張機能アイコンを右クリックし、「Options」から以下の項目をカスタマイズできます：
+Right-click the extension icon and select "Options" to customize:
 
-- **休憩時間**: 1分〜60分で設定可能（デフォルト: 10分）
-- **警告時間**: 終了の何分前に通知するか（デフォルト: 1分前）
-- **対象サイト**: 休憩対象として登録するウェブサイト
-- **通知の有効/無効**: デスクトップ通知のON/OFF
+- **Break Duration**: Set from 1 to 60 minutes (default: 10 minutes)
+- **Warning Time**: Choose when to receive the end-of-break notification (default: 1 minute before)
+- **Favorite Sites**: Add shortcuts to your frequently visited break sites
+- **Notifications**: Enable or disable desktop notifications
 
-### 対象サイトの追加方法
+### Managing Favorite Sites
 
-1. Options ページを開く
-2. "Target Websites" セクションで新しいドメインを入力（例: youtube.com）
-3. "Add" ボタンをクリック
-4. 追加したサイトでアイコンをクリックすると、タイマーバナーが表示されるようになります
+Your favorite sites are automatically added when you start a break:
+1. The extension remembers your most recent break sites (up to 10)
+2. Access them from the Options page as quick shortcuts
+3. You can also manually add or remove sites
 
-## 📁 ファイル構成
+## ???? Project Structure
 
 ```
 breakLoopTimer/
-├── manifest.json          # 拡張機能の設定ファイル
-├── background.js          # バックグラウンドスクリプト（タイマー管理）
-├── content.js            # コンテンツスクリプト（バナー表示）
-├── content.css           # バナーのスタイル
-├── popup.html            # ポップアップUI
-├── popup.js              # ポップアップのロジック
-├── options.html          # 設定ページ
-├── options.js            # 設定ページのロジック
-├── redirect.html         # リダイレクト完了ページ
-├── redirect.js           # リダイレクトページのロジック
-├── icons/                # アイコン画像
-│   ├── icon16.png
-│   ├── icon48.png
-│   └── icon128.png
-└── README.md             # このファイル
+????????? manifest.json          # Extension configuration
+????????? background.js          # Background service worker (timer logic)
+????????? content.js            # Content script (banner UI)
+????????? content.css           # Banner styling
+????????? options.html          # Settings page
+????????? options.js            # Settings page logic
+????????? popup.html            # Popup UI
+????????? popup.js              # Popup logic
+????????? icons/                # Extension icons
+???   ????????? icon16.png
+???   ????????? icon48.png
+???   ????????? icon128.png
+????????? docs/                 # Documentation
+???   ????????? ChromeWebStore.md
+???   ????????? PERMISSIONS.md
+???   ????????? PRIVACY_POLICY.md
+????????? README.md             # This file
 ```
 
-## ⚙️ 技術仕様
+## ?????? Technical Details
 
 - **Manifest Version**: 3
-- **対応サイト**: ユーザーが登録した任意のウェブサイト
-- **パーミッション**:
-  - `activeTab`: アイコンクリック時に現在のタブにバナーを表示
-  - `scripting`: スクリプトとスタイルの動的注入
-  - `notifications`: デスクトップ通知
-  - `storage`: 設定と統計の保存
-  - `tabs`: タブの自動クローズ
-  - `alarms`: タイマー管理
+- **Supported Sites**: Works on any website (user-triggered via icon click)
+- **Permissions**:
+  - `activeTab`: Display banner on current tab when icon is clicked
+  - `scripting`: Dynamically inject scripts and styles
+  - `notifications`: Send desktop notifications
+  - `storage`: Save settings and statistics locally
+  - `tabs`: Manage tab closing and favorite shortcuts
+  - `alarms`: Maintain accurate timer in background
 
-## 🔒 プライバシー
+For detailed permission justifications, see [PERMISSIONS.md](docs/PERMISSIONS.md).
 
-このextensionは：
-- ✅ 個人情報を収集しません
-- ✅ 外部サーバーにデータを送信しません
-- ✅ 閲覧履歴を記録しません
-- ✅ トラッキングやアナリティクスを使用しません
+## ???? Privacy
 
-すべてのデータ（設定、統計）はローカルに保存されます。詳細は [PRIVACY_POLICY.md](PRIVACY_POLICY.md) をご覧ください。
+This extension is privacy-first:
+- ??? No personal data collection
+- ??? No external server communication
+- ??? No browsing history tracking
+- ??? No analytics or tracking
 
-## 🔧 開発
+All data (settings, statistics) is stored locally on your device. See [PRIVACY_POLICY.md](docs/PRIVACY_POLICY.md) for details.
 
-### 必要な環境
+## ???? Development
 
-- Google Chrome または Chromium ベースのブラウザ
-- テキストエディタ
+### Requirements
 
-### デバッグ
+- Google Chrome or Chromium-based browser
+- Text editor
 
-1. `chrome://extensions/` でデベロッパーモードを有効化
-2. 拡張機能の「詳細」→「バックグラウンドページを検証」でデベロッパーツールを開く
-3. コンソールでログを確認
+### Debugging
 
-### 変更の適用
+1. Go to `chrome://extensions/` and enable Developer mode
+2. Click "Details" on the extension ??? "Inspect views: service worker" to open DevTools
+3. Check console logs for debugging information
 
-ファイルを変更した後:
-1. `chrome://extensions/` を開く
-2. 拡張機能の「更新」ボタン（🔄）をクリック
-3. ページをリロードして変更を確認
+### Applying Changes
 
-## 📝 今後の改善案
+After modifying files:
+1. Go to `chrome://extensions/`
+2. Click the reload icon (????) for this extension
+3. Refresh the page to see changes
 
-- [ ] 複数のSNSサイトに対応（Facebook、Instagram、YouTubeなど）
-- [ ] 休憩時間のプリセット機能
-- [ ] 統計のグラフ表示
-- [ ] ポモドーロテクニックとの統合
-- [ ] ホワイトリスト/ブラックリスト機能
-- [ ] カスタムサウンド通知
+### Building Release
 
-## 📄 ライセンス
+Create a zip file for Chrome Web Store submission:
+
+```bash
+./create-release-zip.sh
+```
+
+This creates a zip file with only the necessary extension files.
+
+## ???? Future Improvements
+
+- [ ] Pomodoro technique integration
+- [ ] Break time presets (quick 5/10/15 minute breaks)
+- [ ] Statistics graphs and charts
+- [ ] Custom notification sounds
+- [ ] Break reminder scheduling
+- [ ] Dark mode for banner
+- [ ] Multiple language support (UI localization)
+
+## ???? License
 
 MIT License
 
-## 🤝 コントリビューション
+## ???? Contributing
 
-プルリクエストを歓迎します！バグ報告や機能提案はIssuesでお願いします。
+Pull requests are welcome! For bug reports or feature suggestions, please open an issue.
+
+## ???? Acknowledgments
+
+Created to help people maintain productivity while enjoying guilt-free breaks.
 
 ---
 
-**注意**: この拡張機能は生産性向上を目的としていますが、適度な休憩は重要です。無理のない範囲でご利用ください。
+**Note**: This extension is designed to support productivity, but remember that regular breaks are important for your health and focus. Use it responsibly!

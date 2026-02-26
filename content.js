@@ -1,14 +1,14 @@
-// 既にスクリプトが注入されているかチェック
-if (window.breakLoopTimerInjected) {
-    // 既に注入済みの場合はスキップ
-} else {
+// 関数定義は初回のみ実行
+if (!window.breakLoopTimerInjected) {
     window.breakLoopTimerInjected = true;
 
-    // バナーが既に表示されているかチェック
-    let bannerShown = false;
-    let timerInterval = null;
+    // バナーの状態をグローバルに保存
+    window.breakLoopTimerState = {
+        bannerShown: false,
+        timerInterval: null
+    };
 
-    // ページ読み込み時にバナーを表示
+    // バナーを表示する初期化処理
     function init() {
         // 既にタイマーが動いているかチェック
         if (!chrome.runtime?.id) {
@@ -29,7 +29,7 @@ if (window.breakLoopTimerInjected) {
             if (response && response.isActive) {
                 // 既にタイマーが動いている場合は、タイマー表示バナーを表示
                 showTimerBanner(response.remainingTime);
-            } else if (!bannerShown) {
+            } else if (!window.breakLoopTimerState.bannerShown) {
                 // タイマーが動いていない場合は、開始確認バナーを表示
                 showPromptBanner();
             }
@@ -38,7 +38,7 @@ if (window.breakLoopTimerInjected) {
 
     // 休憩開始確認バナーを表示
     function showPromptBanner() {
-        if (bannerShown) return;
+        if (window.breakLoopTimerState.bannerShown) return;
 
         // 設定を読み込んでバナーを表示
         chrome.storage.sync.get('settings', (data) => {
@@ -59,7 +59,7 @@ if (window.breakLoopTimerInjected) {
   `;
 
             document.body.appendChild(banner);
-            bannerShown = true;
+            window.breakLoopTimerState.bannerShown = true;
 
             // イベントリスナーを追加
             document.getElementById('break-start-btn').addEventListener('click', startBreak);
@@ -96,7 +96,7 @@ if (window.breakLoopTimerInjected) {
   `;
 
         document.body.appendChild(banner);
-        bannerShown = true;
+        window.breakLoopTimerState.bannerShown = true;
 
         setTimeout(() => {
             banner.classList.add('show');
@@ -118,11 +118,11 @@ if (window.breakLoopTimerInjected) {
     function updateTimer(initialRemaining) {
         let remaining = initialRemaining;
 
-        timerInterval = setInterval(() => {
+        window.breakLoopTimerState.timerInterval = setInterval(() => {
             remaining -= 1000;
 
             if (remaining <= 0) {
-                clearInterval(timerInterval);
+                clearInterval(window.breakLoopTimerState.timerInterval);
                 return;
             }
 
@@ -180,8 +180,8 @@ if (window.breakLoopTimerInjected) {
             }
 
             if (response && response.success) {
-                if (timerInterval) {
-                    clearInterval(timerInterval);
+                if (window.breakLoopTimerState.timerInterval) {
+                    clearInterval(window.breakLoopTimerState.timerInterval);
                 }
                 closeBanner();
             }
@@ -195,12 +195,12 @@ if (window.breakLoopTimerInjected) {
             banner.classList.remove('show');
             setTimeout(() => {
                 banner.remove();
-                bannerShown = false;
+                window.breakLoopTimerState.bannerShown = false;
             }, 300);
         }
 
-        if (timerInterval) {
-            clearInterval(timerInterval);
+        if (window.breakLoopTimerState.timerInterval) {
+            clearInterval(window.breakLoopTimerState.timerInterval);
         }
     }
 
@@ -225,6 +225,11 @@ if (window.breakLoopTimerInjected) {
         }
     });
 
-    // 初期化を実行
-    init();
+    // init関数をグローバルに保存して2回目以降のクリックでも使えるようにする
+    window.breakLoopTimerInit = init;
+}
+
+// 拡張機能アイコンのクリック時：既にバナーがなければ表示
+if (!document.getElementById('break-loop-timer-banner') && window.breakLoopTimerInit) {
+    window.breakLoopTimerInit();
 }
